@@ -257,29 +257,7 @@ npm run dev:production
 3. Create a test board member
 4. Verify email delivery and link functionality
 
-## 📞 Support & Troubleshooting
 
-### Common Issues
-
-**Email not sending:**
-- Check SMTP credentials
-- Verify firewall settings
-- Check email service quotas
-
-**MFA setup failing:**
-- Verify TOTP library installation
-- Check time synchronization
-- Validate secret key generation
-
-**Token verification failing:**
-- Check token expiration
-- Verify JWT signing (if implemented)
-- Check URL encoding issues
-
-### Support Contacts
-- **IT Support**: support@boardgovernance.ai | +974 4003 3333
-- **Security Team**: security@boardgovernance.ai
-- **Development Team**: dev@boardgovernance.ai
 
 ## 📚 Additional Resources
 
@@ -289,5 +267,3 @@ npm run dev:production
 - [Email Security Best Practices](https://owasp.org/www-community/controls/Email_Security)
 
 ---
-
-**Note**: This authentication system is designed for production use with enterprise-grade security. All components are SOC2, ISO 27001, and HIPAA compliant when properly configured. 
