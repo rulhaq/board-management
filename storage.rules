@@ -1,0 +1,67 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to get user role from Firestore
+    function getUserRole() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+    
+    // Helper function to check if user is secretary
+    function isSecretary() {
+      return isAuthenticated() && getUserRole() == 'secretary';
+    }
+    
+    // Documents storage
+    match /documents/{documentId}/{allPaths=**} {
+      // All authenticated users can read documents
+      allow read: if isAuthenticated();
+      // Admins and secretaries can write documents
+      allow write: if isAuthenticated() && (isAdmin() || isSecretary());
+      // Only admins can delete documents
+      allow delete: if isAdmin();
+    }
+    
+    // Profile pictures
+    match /profiles/{userId}/{allPaths=**} {
+      // Users can read and write their own profile pictures
+      allow read, write: if isAuthenticated() && 
+        (request.auth.uid == userId || isAdmin());
+      // Users can delete their own profile pictures
+      allow delete: if isAuthenticated() && 
+        (request.auth.uid == userId || isAdmin());
+    }
+    
+    // Meeting recordings
+    match /recordings/{meetingId}/{allPaths=**} {
+      // All authenticated users can read recordings
+      allow read: if isAuthenticated();
+      // Admins and secretaries can upload recordings
+      allow write: if isAuthenticated() && (isAdmin() || isSecretary());
+      // Only admins can delete recordings
+      allow delete: if isAdmin();
+    }
+    
+    // Avatars
+    match /avatars/{allPaths=**} {
+      // All authenticated users can read avatars
+      allow read: if isAuthenticated();
+      // Only admins can upload avatars
+      allow write: if isAdmin();
+    }
+    
+    // Default: deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{"users": [
+{
+  "localId": "XpG15JRgW5gbovk1QyXmAYpII9g1",
+  "email": "chairman@sidra.com",
+  "emailVerified": false,
+  "passwordHash": "Z3NsBPbZo8beXh15hYq9kydyVWSMmVYXNMcGtEGyEoZIKINfTYeLhPdvHrgy+O5wol2mFIJuMgGMmK9xQzTmMw==",
+  "salt": "r8JkNfikn1BGJg==",
+  "lastSignedInAt": "1757061251475",
+  "createdAt": "1756971163669",
+  "providerUserInfo": []
+},
+{
+  "localId": "stVOFlHxQVheOu9dRLGGPXn7eZ22",
+  "email": "secretary@sidra.com",
+  "emailVerified": false,
+  "passwordHash": "MT+NMiUQ5pi13NHtUr7vtlewP/Uup/mAvXkvBbWAObt/7VrO596HcrBt76pnz8P+/3VFSxOIBtMMffvgCXJuMw==",
+  "salt": "1T1/qUT52pAsYw==",
+  "lastSignedInAt": "1756970991875",
+  "createdAt": "1756970991875",
+  "providerUserInfo": []
+},
+{
+  "localId": "tz8CzKaQ35QJIx2TY2cj4X9lxGT2",
+  "email": "admin@sidra.com",
+  "emailVerified": false,
+  "passwordHash": "c48hC5f5QoueUan42Wj1VvIYrO0Z4087BieVqd5001F2Yl1ASVId49zr4C6E7WqM5Ke6mpIU4xMCXXMROjVHbg==",
+  "salt": "uLr/mcqCpl6Vnw==",
+  "lastSignedInAt": "1756970835889",
+  "createdAt": "1756970835889",
+  "providerUserInfo": []
+}]}

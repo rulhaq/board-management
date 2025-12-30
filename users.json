@@ -1,0 +1,74 @@
+[
+  {
+    "localId": "admin-uid-001",
+    "email": "admin@sidra.com",
+    "emailVerified": true,
+    "displayName": "System Administrator",
+    "disabled": false,
+    "passwordHash": "admin123",
+    "customClaims": "{\"role\":\"admin\",\"permissions\":[\"*\"]}"
+  },
+  {
+    "localId": "secretary-uid-001", 
+    "email": "secretary@sidra.com",
+    "emailVerified": true,
+    "displayName": "Board Secretary",
+    "disabled": false,
+    "passwordHash": "sec123",
+    "customClaims": "{\"role\":\"secretary\",\"permissions\":[\"documents.read\",\"documents.create\",\"documents.edit\",\"meetings.read\",\"meetings.create\",\"meetings.edit\",\"votes.create\",\"reports.read\",\"reports.create\"]}"
+  },
+  {
+    "localId": "khalil-uid-001",
+    "email": "dr.khalil@sidra.com", 
+    "emailVerified": true,
+    "displayName": "Dr. Khalil Al-Mansouri",
+    "disabled": false,
+    "passwordHash": "board123",
+    "customClaims": "{\"role\":\"board_member\",\"permissions\":[\"documents.read\",\"meetings.read\",\"votes.cast\",\"reports.read\"]}"
+  },
+  {
+    "localId": "sarah-uid-001",
+    "email": "dr.sarah@sidra.com",
+    "emailVerified": true, 
+    "displayName": "Dr. Sarah Johnson",
+    "disabled": false,
+    "passwordHash": "board123",
+    "customClaims": "{\"role\":\"board_member\",\"permissions\":[\"documents.read\",\"meetings.read\",\"votes.cast\",\"reports.read\"]}"
+  },
+  {
+    "localId": "omar-uid-001",
+    "email": "prof.omar@sidra.com",
+    "emailVerified": true,
+    "displayName": "Prof. Omar Al-Dosari",
+    "disabled": false,
+    "passwordHash": "board123",
+    "customClaims": "{\"role\":\"board_member\",\"permissions\":[\"documents.read\",\"meetings.read\",\"votes.cast\",\"reports.read\"]}"
+  },
+  {
+    "localId": "maryam-uid-001",
+    "email": "dr.maryam@sidra.com",
+    "emailVerified": true,
+    "displayName": "Dr. Maryam Al-Naimi",
+    "disabled": false,
+    "passwordHash": "board123",
+    "customClaims": "{\"role\":\"board_member\",\"permissions\":[\"documents.read\",\"meetings.read\",\"votes.cast\",\"reports.read\"]}"
+  },
+  {
+    "localId": "hassan-uid-001",
+    "email": "hassan@sidra.com",
+    "emailVerified": true,
+    "displayName": "Mr. Hassan Al-Kaabi",
+    "disabled": false,
+    "passwordHash": "board123",
+    "customClaims": "{\"role\":\"board_member\",\"permissions\":[\"documents.read\",\"meetings.read\",\"votes.cast\",\"reports.read\"]}"
+  },
+  {
+    "localId": "layla-uid-001",
+    "email": "dr.layla@sidra.com",
+    "emailVerified": true,
+    "displayName": "Dr. Layla Al-Thani",
+    "disabled": false,
+    "passwordHash": "board123",
+    "customClaims": "{\"role\":\"board_member\",\"permissions\":[\"documents.read\",\"meetings.read\",\"votes.cast\",\"reports.read\"]}"
+  }
+] 

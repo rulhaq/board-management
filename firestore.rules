@@ -1,0 +1,238 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to get user document
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    // Helper function to check user role
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return hasRole('admin');
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isOwner(userId);
+      // Admins can read all users
+      allow read: if isAdmin();
+      // Users can update their own profile (except role)
+      allow update: if isOwner(userId) && 
+        (!('role' in request.resource.data) || 
+         request.resource.data.role == resource.data.role);
+      // Admins can create and update any user
+      allow create, update: if isAdmin();
+      // Admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // Documents collection
+    match /documents/{documentId} {
+      // All authenticated users can read documents
+      allow read: if isAuthenticated();
+      // Admins, secretaries, and board members can create documents
+      allow create: if isAuthenticated();
+      // Admins and secretaries can update documents, users can update their own
+      allow update: if isAuthenticated() && 
+        (isAdmin() || hasRole('secretary') || resource.data.uploadedBy == request.auth.uid);
+      // Only admins can delete documents
+      allow delete: if isAdmin();
+    }
+    
+    // Meetings collection
+    match /meetings/{meetingId} {
+      // All authenticated users can read meetings
+      allow read: if isAuthenticated();
+      // All authenticated users (board members) can create meetings
+      allow create: if isAuthenticated();
+      // Admins, secretaries, and meeting creators can update meetings
+      allow update: if isAuthenticated() && 
+        (isAdmin() || hasRole('secretary') || resource.data.createdBy == request.auth.uid);
+      // Only admins can delete meetings
+      allow delete: if isAdmin();
+    }
+    
+    // Ballots collection
+    match /ballots/{ballotId} {
+      // All authenticated users can read ballots
+      allow read: if isAuthenticated();
+      // All authenticated board members can create ballots
+      allow create: if isAuthenticated();
+      // Admins and ballot creators can update ballots
+      allow update: if isAuthenticated() && 
+        (isAdmin() || resource.data.createdBy == request.auth.uid);
+      // Only admins can delete ballots
+      allow delete: if isAdmin();
+    }
+    
+    // Votes collection
+    match /votes/{voteId} {
+      // Users can read their own votes, admins can read all
+      allow read: if isAuthenticated() && 
+        (isAdmin() || resource.data.userId == request.auth.uid);
+      // All authenticated users can create votes
+      allow create: if isAuthenticated();
+      // Users can update their own votes (before ballot closes)
+      allow update: if isAuthenticated() && 
+        (isAdmin() || resource.data.userId == request.auth.uid);
+      // Only admins can delete votes
+      allow delete: if isAdmin();
+    }
+    
+    // Chats collection
+    match /chats/{chatId} {
+      // Users can read chats they're part of
+      allow read: if isAuthenticated() && 
+        (isAdmin() || resource.data.participants.hasAny([request.auth.uid]));
+      // Authenticated users can create chats
+      allow create: if isAuthenticated();
+      // Users can update chats they're part of
+      allow update: if isAuthenticated() && 
+        (isAdmin() || resource.data.participants.hasAny([request.auth.uid]));
+      // Users can delete chats they created
+      allow delete: if isAuthenticated() && 
+        (isAdmin() || resource.data.createdBy == request.auth.uid);
+    }
+    
+    // Messages collection
+    match /messages/{messageId} {
+      // Users can read messages from chats they're part of
+      allow read: if isAuthenticated();
+      // Authenticated users can create messages
+      allow create: if isAuthenticated();
+      // Users can update their own messages
+      allow update: if isAuthenticated() && 
+        (isAdmin() || resource.data.senderId == request.auth.uid);
+      // Users can delete their own messages
+      allow delete: if isAuthenticated() && 
+        (isAdmin() || resource.data.senderId == request.auth.uid);
+    }
+    
+    // AI Chat Logs collection
+    match /aiChatLogs/{logId} {
+      // Users can read their own chat logs
+      allow read: if isAuthenticated() && 
+        (isAdmin() || resource.data.userId == request.auth.uid);
+      // Authenticated users can create chat logs
+      allow create: if isAuthenticated();
+      // No updates or deletes allowed
+      allow update, delete: if false;
+    }
+    
+    // Reports collection
+    match /reports/{reportId} {
+      // All authenticated users can read reports
+      allow read: if isAuthenticated();
+      // Admins and secretaries can create reports
+      allow create: if isAuthenticated() && (isAdmin() || hasRole('secretary'));
+      // Admins and secretaries can update reports
+      allow update: if isAuthenticated() && (isAdmin() || hasRole('secretary'));
+      // Only admins can delete reports
+      allow delete: if isAdmin();
+    }
+    
+    // Audit logs collection (both naming conventions)
+    match /auditLogs/{logId} {
+      // Only admins can read audit logs
+      allow read: if isAdmin();
+      // System can create audit logs (server-side only)
+      allow create: if isAuthenticated();
+      // No updates or deletes allowed
+      allow update, delete: if false;
+    }
+    
+    match /audit_logs/{logId} {
+      // Only admins can read audit logs
+      allow read: if isAdmin();
+      // System can create audit logs (server-side only)
+      allow create: if isAuthenticated();
+      // No updates or deletes allowed
+      allow update, delete: if false;
+    }
+    
+    // Activity logs collection (both naming conventions)
+    match /activityLogs/{logId} {
+      // Admins can read all activity logs
+      allow read: if isAdmin();
+      // Users can read their own activity logs
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // System can create activity logs
+      allow create: if isAuthenticated();
+      // No updates or deletes allowed
+      allow update, delete: if false;
+    }
+    
+    match /activity_logs/{logId} {
+      // Admins can read all activity logs
+      allow read: if isAdmin();
+      // Users can read their own activity logs
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // System can create activity logs
+      allow create: if isAuthenticated();
+      // No updates or deletes allowed
+      allow update, delete: if false;
+    }
+    
+    // Team chats collection
+    match /teamChats/{chatId} {
+      // Users can read team chats they're part of
+      allow read: if isAuthenticated() && 
+        (isAdmin() || resource.data.participants.hasAny([request.auth.uid]));
+      // Authenticated users can create team chats
+      allow create: if isAuthenticated();
+      // Users can update team chats they're part of
+      allow update: if isAuthenticated() && 
+        (isAdmin() || resource.data.participants.hasAny([request.auth.uid]));
+      // Users can delete team chats they created
+      allow delete: if isAuthenticated() && 
+        (isAdmin() || resource.data.createdBy == request.auth.uid);
+    }
+    
+    // App settings collection (for admin console)
+    match /appSettings/{settingId} {
+      // All authenticated users can read settings
+      allow read: if isAuthenticated();
+      // Only admins can create/update settings
+      allow create, update: if isAdmin();
+      // Only admins can delete settings
+      allow delete: if isAdmin();
+    }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if isAuthenticated() && 
+        (isAdmin() || resource.data.userId == request.auth.uid);
+      // System can create notifications
+      allow create: if isAuthenticated();
+      // Users can update their own notifications
+      allow update: if isAuthenticated() && 
+        (isAdmin() || resource.data.userId == request.auth.uid);
+      // Users can delete their own notifications
+      allow delete: if isAuthenticated() && 
+        (isAdmin() || resource.data.userId == request.auth.uid);
+    }
+    
+    // Default: deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
