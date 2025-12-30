@@ -165,7 +165,7 @@ The Docker container includes a health check that verifies the application is ru
 ### Default Admin Credentials
 
 After initial setup, create an admin user with:
-- Email: `cto@scalovate.com` (or your preferred admin email)
+- Email: your preferred admin email
 - Role: `admin`
 
 ### Admin Console
